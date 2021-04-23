@@ -52,16 +52,19 @@ router.get("/", (req, resp) => {
     resp.send(cvJson);
   });
 
-  // function getKeys(obj, val) {
-  //   var objects = [];
-  //   for (var i in obj) {
-  //       if (!obj.hasOwnProperty(i)) continue;
-  //       if (typeof obj[i] == 'object') {
-  //           objects = objects.concat(getKeys(obj[i], val));
-  //       } else if (obj[i] == val) {
-  //           objects.push(i);
-  //       }
-  //   }
-    // return objects;
-// }
+// 4) DELETE session
+router.delete("/:session", (req, resp) => {
+  // Find seccion
+  var myValue = req.params.session;
+  var result = cvJson[myValue];
+  var newSession = req.body;
+  Object.keys(cvJson).forEach((key)=> {
+    if (cvJson[key] === result) {
+      // Delete session
+      delete cvJson[key];
+    }
+  })
+  resp.send(cvJson);
+});
+
 module.exports = router;
