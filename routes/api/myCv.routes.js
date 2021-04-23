@@ -36,8 +36,32 @@ router.get("/", (req, resp) => {
   });
 
   // 3) PUT session
-  router.post(":session", (req, resp) => {
-
+  router.put("/:session", (req, resp) => {
+    // Find seccion
+    var myValue = req.params.session;
+    var result = cvJson[myValue];
+    var newSession = req.body;
+    Object.keys(cvJson).forEach((key)=> {
+      if (cvJson[key] === result) {
+        // Delete session
+        delete cvJson[key];
+        // Insert it modified
+        cvJson[key] = newSession;
+      }
+    })
+    resp.send(cvJson);
   });
 
+  // function getKeys(obj, val) {
+  //   var objects = [];
+  //   for (var i in obj) {
+  //       if (!obj.hasOwnProperty(i)) continue;
+  //       if (typeof obj[i] == 'object') {
+  //           objects = objects.concat(getKeys(obj[i], val));
+  //       } else if (obj[i] == val) {
+  //           objects.push(i);
+  //       }
+  //   }
+    // return objects;
+// }
 module.exports = router;
