@@ -1,7 +1,7 @@
 const express = require("express");
 // const { resolve } = require("node:path");
 const router = express.Router();
-const cvJson = require("../../cv-json.data");
+var cvJson = require("../../cv-json.data");
 
 // 1) GET => All cvs
 router.get("/", (req, resp) => {
@@ -20,21 +20,24 @@ router.get("/", (req, resp) => {
       console.log(found);
   });
 
-
   // 2) POST a new session
   router.post("/", (req, resp) => {
-    // console.log(req.body);
-    cvJson = req.body;
+    try {
+      if(req.body != null){
+        var newSession = req.body;
+        cvJson =  {cvJson,...newSession};
+       //  data =  req.body;
+       //  console.log("Entre",cvJson)
+      }
+    } catch (error) {
+      console.log(error);
+    }
     resp.send(cvJson)
-    // const newSession = {
-    //   id:  req.body.id,
-    //   msg: req.body.msg
-    // }
-    // if (!newMessage.id || !newMessage.msg) {
-    //   return resp.json({msg: 'Please enter an Id and message'})
-    // }
-    // messagesJSON.push(newMessage)
-    // resp.send(messagesJSON);
+  });
+
+  // 3) PUT session
+  router.post(":session", (req, resp) => {
+
   });
 
 module.exports = router;
