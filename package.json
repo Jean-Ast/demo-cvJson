@@ -4,7 +4,10 @@
   "description": "Demo project",
   "main": "main.js",
   "dependencies": {
-    "express": "^4.17.1"
+    "crypto": "^1.0.1",
+    "etag": "^1.8.1",
+    "express": "^4.17.1",
+    "fastify-etag": "^2.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

@@ -2,22 +2,16 @@ const express = require("express");
 // const { resolve } = require("node:path");
 const router = express.Router();
 var cvJson = require("../../cv-json.data");
+let etag = require('etag')
+var crypto = require('crypto');
 
-// 1) GET => All cvs
+var md5sum = crypto.createHash('md5');
+
+// 1) GET => cv
 router.get("/", (req, resp) => {
+  resp.setHeader('Etag',etag("body"))
+  // resp.setHeader('etag', '"foobar"')
     resp.json(cvJson);
-  });
-  
-  // 1.1) GET a single CV
-  router.get("/:email", (req, resp) => {
-    // resp.json(req.params.email);
-    const found = cvJson.some(m => m.basics.email == req.params.email);
-    if(found){
-        resp.json(cvJson.filter(p => p.basics.email === req.params.email))
-      } else {
-        resp.status(400).json({"people": `People CV ${req.params.email} not found`})
-      }
-      console.log(found);
   });
 
   // 2) POST a new session
@@ -32,6 +26,7 @@ router.get("/", (req, resp) => {
     } catch (error) {
       console.log(error);
     }
+    resp.setHeader('Etag',etag("body"))
     resp.send(cvJson)
   });
 
@@ -49,11 +44,15 @@ router.get("/", (req, resp) => {
         cvJson[key] = newSession;
       }
     })
+    resp.setHeader('Etag',etag(md5sum.update(JSON.stringify(newSession)).digest("base64")))
+    console.log(md5sum)
     resp.send(cvJson);
   });
 
 // 4) DELETE session
 router.delete("/:session", (req, resp) => {
+  // console.log(req)
+  // console.log(resp)
   // Find seccion
   var myValue = req.params.session;
   var result = cvJson[myValue];
@@ -64,7 +63,12 @@ router.delete("/:session", (req, resp) => {
       delete cvJson[key];
     }
   })
+  
+  resp.setHeader('Etag',etag("body"))
   resp.send(cvJson);
 });
 
+// 5) PATCH session
+
 module.exports = router;
+
