@@ -10,6 +10,10 @@
 
 ## package.json
 **npm init -y**
+
+## express-basic-auth
+1) **npm i express-basic-auth**
+2) **npm audit fix**
   
 # To Do
 Mandato
