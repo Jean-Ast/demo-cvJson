@@ -3,12 +3,30 @@ const router = express.Router();
 var cvJson = require("../../cv-json.data");
 let etag = require("etag");
 
-var md5sum = crypto.createHash("md5");
 
 // 1) GETs => cv
 router.get("/mycv/", (req, resp) => {
   resp.setHeader("Etag", etag(JSON.stringify(cvJson)));
   resp.json(cvJson);
+});
+
+// 1.1) Rutas navegables (cv.session)
+router.get("/mycv/:session", (req, resp) => {
+  console.log(req.params)
+  resp.setHeader("Etag", etag(JSON.stringify(cvJson)));
+  resp.send(cvJson[req.params.session]);
+});
+
+// 1.2) Rutas navegables (cv.session.subSession)
+router.get('/mycv/:session/ss/:subsession', (req, resp) => {
+  resp.setHeader("Etag", etag(JSON.stringify(cvJson)));
+  // Retrieve params
+  let mysession = req.params.session
+  let mySubsession = req.params.subsession
+  // Create a new cvJson json to access subsession 
+  let newcvJson = cvJson[mysession]
+  // Sending the new cvJson
+  resp.send(newcvJson[mySubsession]);
 });
 
 // 2) POST a new session
